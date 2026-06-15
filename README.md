@@ -124,7 +124,44 @@ chi preferisce caricare più foto insieme da lì.
 Non servono variabili d'ambiente: gli URL di Google Apps Script e Immich
 sono configurati direttamente in `src/config.js`.
 
-## 6. Easter eggs 🥚
+## 6. Docker / Unraid
+
+Il sito può anche essere servito come container statico (build Vite +
+nginx).
+
+- **Build manuale**:
+  ```bash
+  docker build -t laurea-party .
+  docker run --rm -p 8088:80 laurea-party
+  ```
+  poi apri `http://localhost:8088`.
+
+- **Immagine pubblicata**: ogni push su `main` rilancia il workflow
+  [`.github/workflows/docker-publish.yml`](.github/workflows/docker-publish.yml),
+  che builda e pubblica `ghcr.io/campier/laurea-party:latest` su GitHub
+  Container Registry. La prima volta vai su GitHub → il pacchetto
+  `laurea-party` sotto **Packages** → **Package settings** → rendilo
+  **Public** (altrimenti Unraid non può scaricarlo senza login).
+
+- **docker-compose**:
+  ```bash
+  docker compose up -d
+  ```
+  (vedi [`docker-compose.yml`](docker-compose.yml), espone la porta `8088`).
+
+- **Unraid**: in Community Applications → icona ingranaggio in alto a
+  destra → **Add a Template** (oppure "Template" → "Custom") e incolla
+  l'URL:
+  `https://raw.githubusercontent.com/CamPier/laurea-party/main/unraid/laurea-party.xml`
+  Il template ([`unraid/laurea-party.xml`](unraid/laurea-party.xml)) punta
+  all'immagine GHCR ed espone la porta `8088` di default (modificabile).
+
+> Anche se servito via Docker/Unraid, il sito resta **statico**: RSVP,
+> guestbook e galleria foto continuano a parlare direttamente con Google
+> Sheets/Apps Script e Immich dal browser, come configurato in
+> `src/config.js`.
+
+## 7. Easter eggs 🥚
 
 Ce ne sono un paio nascosti nel sito:
 - apri la **console del browser** per un messaggio di benvenuto;
@@ -152,4 +189,9 @@ src/
     guestbook.js            # messaggi (Google Sheet) + foto (Immich)
 google-apps-script/
   Code.gs                  # backend Apps Script (RSVP + Guestbook)
+unraid/
+  laurea-party.xml         # template Community Applications
+Dockerfile                 # build Vite + nginx
+nginx.conf                 # config nginx per il container
+docker-compose.yml         # avvio rapido del container
 ```

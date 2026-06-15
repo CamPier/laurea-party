@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>laurea-party</Name>
+  <Repository>ghcr.io/campier/laurea-party:latest</Repository>
+  <Registry>https://ghcr.io/campier/laurea-party</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/CamPier/laurea-party</Support>
+  <Project>https://github.com/CamPier/laurea-party</Project>
+  <Overview>Sito statico in stile terminal per la festa di laurea: countdown, RSVP, guestbook, playlist Spotify, galleria foto e programma della serata. Il sito e' completamente statico (Vite + JS vanilla); RSVP/guestbook scrivono su Google Sheets via Apps Script e le foto sono gestite da Immich.</Overview>
+  <Category>Tools: Other:</Category>
+  <WebUI>http://[IP]:[PORT:80]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/CamPier/laurea-party/main/unraid/laurea-party.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/CamPier/laurea-party/main/public/favicon.svg</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="WebUI Port" Target="80" Default="8088" Mode="tcp" Description="Porta su cui viene esposto il sito" Type="Port" Display="always" Required="true" Mask="false">8088</Config>
+</Container>

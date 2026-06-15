@@ -1,0 +1,7 @@
+services:
+  laurea-party:
+    image: ghcr.io/campier/laurea-party:latest
+    container_name: laurea-party
+    ports:
+      - "8088:80"
+    restart: unless-stopped
