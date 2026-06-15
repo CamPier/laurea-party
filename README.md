@@ -50,17 +50,18 @@ script di **Google Apps Script** che fa da "backend" gratuito.
 2. Apri **Estensioni → Apps Script**.
 3. Cancella il contenuto di `Code.gs` e incolla quello di
    [`google-apps-script/Code.gs`](google-apps-script/Code.gs) di questo
-   repo.
-4. In alto, seleziona la funzione `setup` dal menu a tendina ed eseguila una
-   volta (▶ Esegui). La prima volta Google chiederà delle autorizzazioni:
-   accettale (è il tuo script sul tuo foglio). Questo crea i due fogli
-   **RSVP** e **Guestbook** con le intestazioni.
-5. **Deploy → Nuova implementazione**:
+   repo. Salva.
+4. **Deploy → Nuova implementazione**:
    - Tipo: **App web**
    - Esegui come: **Me**
    - Chi ha accesso: **Chiunque**
-6. Copia l'URL generato (finisce con `/exec`) e inseriscilo in
+   La prima volta Google chiederà delle autorizzazioni: accettale (è il tuo
+   script sul tuo foglio).
+5. Copia l'URL generato (finisce con `/exec`) e inseriscilo in
    `src/config.js` → `sheets.scriptUrl`.
+
+I fogli **RSVP** e **Guestbook** (con le intestazioni) vengono creati
+automaticamente alla prima richiesta — non serve eseguire nulla a mano.
 
 Risultato:
 - le risposte RSVP finiscono nel foglio **RSVP** (timestamp, nome, presenza,
@@ -69,9 +70,9 @@ Risultato:
   letti dal sito (pubblici, aggiornati ogni ~15 secondi).
 
 > Se in futuro modifichi `google-apps-script/Code.gs`, devi creare una
-> **nuova implementazione** (Deploy → Gestisci implementazioni → Modifica →
-> Nuova versione) perché le modifiche siano effettive. L'URL `/exec`
-> resta lo stesso.
+> **nuova versione dell'implementazione** (Deploy → Gestisci implementazioni
+> → Modifica → Nuova versione) perché le modifiche siano effettive. L'URL
+> `/exec` resta lo stesso.
 
 ## 4. Spotify — playlist collaborativa
 

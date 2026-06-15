@@ -40,7 +40,7 @@ export const sheets = {
   // Vedi google-apps-script/Code.gs per il codice da incollare e
   // le istruzioni di deploy.
   // TODO: inserisci l'URL dopo il deploy dello script
-  scriptUrl: '',
+  scriptUrl: 'https://script.google.com/macros/s/AKfycbzurfzdHq1RqcM52QroNvRK_p0coNIA6_wtHABUugTh_jsUwX9_ZvOxSHmdYkWgxA/exec',
 };
 
 // ============================================================
