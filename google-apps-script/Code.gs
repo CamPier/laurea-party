@@ -24,14 +24,17 @@ const RSVP_HEADERS = ['Timestamp', 'Nome', 'Presenza', 'N. persone', 'Note'];
 const GUESTBOOK_HEADERS = ['Timestamp', 'Nome', 'Messaggio'];
 
 function doGet(e) {
-  if (e.parameter.action === 'guestbook') {
+  const params = (e && e.parameter) || {};
+
+  if (params.action === 'guestbook') {
     return jsonResponse({ messages: readGuestbook() });
   }
   return jsonResponse({ ok: true });
 }
 
 function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
+  const contents = (e && e.postData && e.postData.contents) || '{}';
+  const data = JSON.parse(contents);
 
   if (data.type === 'rsvp') {
     appendRsvp(data);
