@@ -15,10 +15,9 @@ npm run preview  # preview della build
 
 ## 1. Modificare i contenuti — `src/config.js`
 
-Tutto ciò che riguarda data, orario, indirizzo, programma, link Spotify e i
-contenuti della sezione "tesi for dummies" si modifica in **un solo file**:
-`src/config.js`. Dopo ogni modifica, se hai `npm run dev` attivo, il sito si
-aggiorna da solo.
+Tutto ciò che riguarda data, orario, indirizzo, programma e link Spotify si
+modifica in **un solo file**: `src/config.js`. Dopo ogni modifica, se hai
+`npm run dev` attivo, il sito si aggiorna da solo.
 
 Cose da completare:
 
@@ -26,22 +25,13 @@ Cose da completare:
   festa (usato per Google Maps e mostrato in chiaro).
 - `party.date` → conferma che `2026-07-24T18:00:00+02:00` sia corretto.
 - `party.schedule` → aggiungi/modifica le voci del programma.
-- `thesis.topics[].meme` → metti il path dell'immagine/gif (vedi sotto).
 - `sheets.scriptUrl` → URL del Web App Apps Script per RSVP/guestbook (vedi
-  sezione 3).
+  sezione 2).
 
 I **ringraziamenti** si scrivono direttamente in `index.html`, dentro la
 sezione `<section id="grazie">` (cerca il commento `TODO`).
 
-## 2. Meme/gif per "Tesi for dummies"
-
-1. Metti i file immagine/gif dentro `public/memes/` (es.
-   `public/memes/agente-ai.gif`).
-2. In `src/config.js`, per ogni voce di `thesis.topics`, imposta
-   `meme: '/memes/agente-ai.gif'`.
-3. Finché `meme` è vuoto, la card mostra un placeholder con le istruzioni.
-
-## 3. Google Sheets (RSVP + Guestbook)
+## 2. Google Sheets (RSVP + Guestbook)
 
 Il form RSVP e il guestbook scrivono su un **Google Sheet**, tramite uno
 script di **Google Apps Script** che fa da "backend" gratuito.
@@ -74,7 +64,7 @@ Risultato:
 > → Modifica → Nuova versione) perché le modifiche siano effettive. L'URL
 > `/exec` resta lo stesso.
 
-## 4. Spotify — playlist collaborativa
+## 3. Spotify — playlist collaborativa
 
 La playlist è già collegata (`party.spotifyPlaylistUrl` in `config.js`) e
 viene mostrata con il player embed di Spotify.
@@ -84,7 +74,7 @@ Per renderla **collaborativa** (se non l'hai già fatto):
 2. Tocca i tre puntini → **Collabora** ("Make collaborative").
 3. Condividi il link — chiunque può aggiungere brani.
 
-## 5. Immich — galleria/upload foto del guestbook
+## 4. Immich — galleria/upload foto del guestbook
 
 Il guestbook usa un **album condiviso Immich** per foto e video.
 
@@ -119,7 +109,7 @@ chi preferisce caricare più foto insieme da lì.
 > funziona, il link diretto alla pagina Immich resta sempre disponibile come
 > alternativa.
 
-## 6. Deploy su Cloudflare Pages (`laurea.camozzi.app`)
+## 5. Deploy su Cloudflare Pages (`laurea.camozzi.app`)
 
 1. Pusha il repo su GitHub (o GitLab).
 2. Su Cloudflare → **Workers & Pages** → **Create application** → **Pages** →
@@ -134,7 +124,7 @@ chi preferisce caricare più foto insieme da lì.
 Non servono variabili d'ambiente: gli URL di Google Apps Script e Immich
 sono configurati direttamente in `src/config.js`.
 
-## 7. Easter eggs 🥚
+## 6. Easter eggs 🥚
 
 Ce ne sono un paio nascosti nel sito:
 - apri la **console del browser** per un messaggio di benvenuto;
@@ -160,7 +150,6 @@ src/
     schedule.js             # programma serata
     spotify.js              # embed playlist
     guestbook.js            # messaggi (Google Sheet) + foto (Immich)
-    thesis.js               # tesi for dummies
 google-apps-script/
   Code.gs                  # backend Apps Script (RSVP + Guestbook)
 ```

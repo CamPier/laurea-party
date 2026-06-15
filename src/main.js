@@ -5,7 +5,6 @@ import { initRsvp } from './sections/rsvp.js';
 import { initSchedule } from './sections/schedule.js';
 import { initSpotify } from './sections/spotify.js';
 import { initGuestbook } from './sections/guestbook.js';
-import { initThesis } from './sections/thesis.js';
 import { initEasterEggs } from './easter-eggs.js';
 
 initCountdown();
@@ -14,7 +13,6 @@ initRsvp();
 initSchedule();
 initSpotify();
 initGuestbook();
-initThesis();
 initEasterEggs();
 
 // Mobile nav toggle
