@@ -30,10 +30,12 @@ function initForm() {
     const files = fileInput.files ? Array.from(fileInput.files) : [];
 
     try {
-      // text/plain evita il preflight CORS: Apps Script legge comunque
-      // il body come JSON tramite e.postData.contents
+      // no-cors: il redirect di Apps Script alla risposta finale non ha
+      // header CORS, quindi non possiamo leggere la risposta. Il body
+      // text/plain arriva comunque a doPost via e.postData.contents.
       await fetch(sheets.scriptUrl, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           type: 'guestbook',
