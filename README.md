@@ -1,8 +1,8 @@
 # 🎓 Laurea Party — pierluigi --laurea --status=COMPLETATA
 
 Sito in stile terminal/hacker per la festa di laurea. Statico (Vite + JS
-vanilla), con Firebase per RSVP e guestbook, Spotify per la playlist
-collaborativa e Immich per la galleria foto.
+vanilla), con Google Sheets (via Apps Script) per RSVP e guestbook, Spotify
+per la playlist collaborativa e Immich per la galleria foto.
 
 ## Avvio rapido
 
@@ -27,6 +27,8 @@ Cose da completare:
 - `party.date` → conferma che `2026-07-24T18:00:00+02:00` sia corretto.
 - `party.schedule` → aggiungi/modifica le voci del programma.
 - `thesis.topics[].meme` → metti il path dell'immagine/gif (vedi sotto).
+- `sheets.scriptUrl` → URL del Web App Apps Script per RSVP/guestbook (vedi
+  sezione 3).
 
 I **ringraziamenti** si scrivono direttamente in `index.html`, dentro la
 sezione `<section id="grazie">` (cerca il commento `TODO`).
@@ -39,35 +41,37 @@ sezione `<section id="grazie">` (cerca il commento `TODO`).
    `meme: '/memes/agente-ai.gif'`.
 3. Finché `meme` è vuoto, la card mostra un placeholder con le istruzioni.
 
-## 3. Firebase (RSVP + Guestbook)
+## 3. Google Sheets (RSVP + Guestbook)
 
-Il form RSVP e il guestbook scrivono su **Firestore**.
+Il form RSVP e il guestbook scrivono su un **Google Sheet**, tramite uno
+script di **Google Apps Script** che fa da "backend" gratuito.
 
-1. Crea un progetto su [Firebase Console](https://console.firebase.google.com).
-2. Abilita **Firestore Database** (modalità produzione, region `eur3` consigliata).
-3. Aggiungi una **Web App** al progetto (icona `</>`) e copia la configurazione.
-4. Copia `.env.example` in `.env` e incolla i valori:
-   ```bash
-   cp .env.example .env
-   ```
-5. Deploy delle security rules (già pronte in `firestore.rules`):
-   ```bash
-   npm install -g firebase-tools   # se non lo hai già
-   firebase login
-   firebase use --add               # seleziona il tuo progetto
-   firebase deploy --only firestore:rules
-   ```
+1. Crea un nuovo [Google Sheet](https://sheets.new) (es. "Laurea — risposte").
+2. Apri **Estensioni → Apps Script**.
+3. Cancella il contenuto di `Code.gs` e incolla quello di
+   [`google-apps-script/Code.gs`](google-apps-script/Code.gs) di questo
+   repo.
+4. In alto, seleziona la funzione `setup` dal menu a tendina ed eseguila una
+   volta (▶ Esegui). La prima volta Google chiederà delle autorizzazioni:
+   accettale (è il tuo script sul tuo foglio). Questo crea i due fogli
+   **RSVP** e **Guestbook** con le intestazioni.
+5. **Deploy → Nuova implementazione**:
+   - Tipo: **App web**
+   - Esegui come: **Me**
+   - Chi ha accesso: **Chiunque**
+6. Copia l'URL generato (finisce con `/exec`) e inseriscilo in
+   `src/config.js` → `sheets.scriptUrl`.
 
-Le regole in `firestore.rules`:
-- chiunque può **inviare** una risposta RSVP, ma **nessuno** può leggerle dal
-  client — le vedi solo tu nella console Firebase (Firestore → collezione
-  `rsvp`);
-- i messaggi del guestbook (collezione `guestbook`) sono pubblici: chiunque
-  può scriverli e leggerli, ma non modificarli/cancellarli.
+Risultato:
+- le risposte RSVP finiscono nel foglio **RSVP** (timestamp, nome, presenza,
+  numero persone, note) — le vedi solo tu apertamente nel tuo Google Sheet;
+- i messaggi del guestbook finiscono nel foglio **Guestbook** e vengono
+  letti dal sito (pubblici, aggiornati ogni ~15 secondi).
 
-> Le chiavi `VITE_FIREBASE_*` finiscono nel bundle pubblico: è normale, sono
-> identificatori del progetto, non segreti. La sicurezza è garantita dalle
-> Firestore Rules, non dal nascondere queste chiavi.
+> Se in futuro modifichi `google-apps-script/Code.gs`, devi creare una
+> **nuova implementazione** (Deploy → Gestisci implementazioni → Modifica →
+> Nuova versione) perché le modifiche siano effettive. L'URL `/exec`
+> resta lo stesso.
 
 ## 4. Spotify — playlist collaborativa
 
@@ -122,11 +126,12 @@ chi preferisce caricare più foto insieme da lì.
 3. Configurazione build:
    - **Build command**: `npm run build`
    - **Build output directory**: `dist`
-4. In **Settings → Environment variables**, aggiungi tutte le variabili
-   `VITE_FIREBASE_*` dal tuo file `.env`.
-5. Dopo il primo deploy, in **Custom domains** aggiungi
+4. Dopo il primo deploy, in **Custom domains** aggiungi
    `laurea.camozzi.app` (il DNS, essendo già su Cloudflare, viene
    configurato automaticamente).
+
+Non servono variabili d'ambiente: gli URL di Google Apps Script e Immich
+sono configurati direttamente in `src/config.js`.
 
 ## 7. Easter eggs 🥚
 
@@ -143,7 +148,6 @@ Per aggiungerne altri, modifica `src/easter-eggs.js`.
 index.html              # markup di tutte le sezioni
 src/
   config.js              # ⭐ contenuti modificabili (data, indirizzo, ecc.)
-  firebase.js             # init Firebase/Firestore
   style.css               # tema terminal
   utils.js                # helper condivisi
   main.js                  # entrypoint, inizializza tutte le sezioni
@@ -151,10 +155,11 @@ src/
   sections/
     countdown.js           # hero + countdown
     maps.js                 # Google Maps embed
-    rsvp.js                 # form RSVP -> Firestore
+    rsvp.js                 # form RSVP -> Google Sheet
     schedule.js             # programma serata
     spotify.js              # embed playlist
-    guestbook.js            # messaggi (Firestore) + foto (Immich)
+    guestbook.js            # messaggi (Google Sheet) + foto (Immich)
     thesis.js               # tesi for dummies
-firestore.rules          # security rules Firestore
+google-apps-script/
+  Code.gs                  # backend Apps Script (RSVP + Guestbook)
 ```

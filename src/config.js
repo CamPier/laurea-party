@@ -33,6 +33,17 @@ export const party = {
 };
 
 // ============================================================
+// GOOGLE SHEETS — RSVP + Guestbook
+// ============================================================
+export const sheets = {
+  // URL del Web App di Google Apps Script (termina con /exec).
+  // Vedi google-apps-script/Code.gs per il codice da incollare e
+  // le istruzioni di deploy.
+  // TODO: inserisci l'URL dopo il deploy dello script
+  scriptUrl: '',
+};
+
+// ============================================================
 // IMMICH — gallery / upload foto del guestbook
 // ============================================================
 export const immich = {

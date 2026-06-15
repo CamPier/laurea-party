@@ -1,7 +1,7 @@
-import { collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase.js';
-import { immich } from '../config.js';
+import { sheets, immich } from '../config.js';
 import { escapeHtml } from '../utils.js';
+
+const POLL_INTERVAL_MS = 15000;
 
 export function initGuestbook() {
   initForm();
@@ -17,16 +17,29 @@ function initForm() {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     status.classList.remove('is-error');
+
+    if (!sheets.scriptUrl) {
+      status.classList.add('is-error');
+      status.textContent = '✗ guestbook non ancora collegato. riprova più tardi.';
+      return;
+    }
+
     status.textContent = 'invio in corso...';
 
     const data = new FormData(form);
     const files = fileInput.files ? Array.from(fileInput.files) : [];
 
     try {
-      await addDoc(collection(db, 'guestbook'), {
-        name: data.get('name'),
-        message: data.get('message'),
-        createdAt: serverTimestamp(),
+      // text/plain evita il preflight CORS: Apps Script legge comunque
+      // il body come JSON tramite e.postData.contents
+      await fetch(sheets.scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          type: 'guestbook',
+          name: data.get('name'),
+          message: data.get('message'),
+        }),
       });
 
       let uploadErrors = 0;
@@ -37,6 +50,7 @@ function initForm() {
       }
 
       form.reset();
+      fetchMessages();
 
       if (uploadErrors > 0) {
         status.classList.add('is-error');
@@ -79,36 +93,46 @@ async function uploadToImmich(file) {
 }
 
 function initMessages() {
+  fetchMessages();
+  setInterval(fetchMessages, POLL_INTERVAL_MS);
+}
+
+async function fetchMessages() {
   const container = document.getElementById('guestbookMessages');
-  const q = query(collection(db, 'guestbook'), orderBy('createdAt', 'desc'), limit(50));
 
-  onSnapshot(
-    q,
-    (snapshot) => {
-      if (snapshot.empty) {
-        container.innerHTML = '<p class="loading">Nessun messaggio ancora. Sii il primo! 👋</p>';
-        return;
-      }
+  if (!sheets.scriptUrl) {
+    container.innerHTML = '<p class="loading">Il guestbook sarà disponibile a breve.</p>';
+    return;
+  }
 
-      container.innerHTML = snapshot.docs
-        .map((doc) => {
-          const d = doc.data();
-          const time = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('it-IT') : '';
-          return `
-            <div class="guestbook__message">
-              <span class="guestbook__message-time">${time}</span>
-              <span class="guestbook__message-name">${escapeHtml(d.name)}:</span>
-              <span>${escapeHtml(d.message)}</span>
-            </div>
-          `;
-        })
-        .join('');
-    },
-    (err) => {
-      console.error(err);
-      container.innerHTML = '<p class="loading">Errore nel caricamento dei messaggi.</p>';
+  try {
+    const res = await fetch(`${sheets.scriptUrl}?action=guestbook`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const data = await res.json();
+    const messages = data.messages || [];
+
+    if (messages.length === 0) {
+      container.innerHTML = '<p class="loading">Nessun messaggio ancora. Sii il primo! 👋</p>';
+      return;
     }
-  );
+
+    container.innerHTML = messages
+      .map((m) => {
+        const time = m.timestamp ? new Date(m.timestamp).toLocaleString('it-IT') : '';
+        return `
+          <div class="guestbook__message">
+            <span class="guestbook__message-time">${time}</span>
+            <span class="guestbook__message-name">${escapeHtml(m.name)}:</span>
+            <span>${escapeHtml(m.message)}</span>
+          </div>
+        `;
+      })
+      .join('');
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = '<p class="loading">Errore nel caricamento dei messaggi.</p>';
+  }
 }
 
 async function initImmichGallery() {
