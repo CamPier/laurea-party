@@ -154,7 +154,17 @@ async function initImmichGallery() {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
-    const assets = data.assets || [];
+    let assets = data.assets || [];
+
+    // Per gli shared link di tipo "Album" Immich non popola `assets` qui:
+    // la lista va presa dall'endpoint dell'album.
+    if (assets.length === 0 && data.album && data.album.id) {
+      const albumRes = await fetch(`${immich.baseUrl}/api/albums/${data.album.id}?key=${immich.sharedLinkKey}`);
+      if (albumRes.ok) {
+        const albumData = await albumRes.json();
+        assets = albumData.assets || [];
+      }
+    }
 
     if (assets.length === 0) {
       gallery.innerHTML = '<p class="loading">Nessuna foto ancora caricata.</p>';
