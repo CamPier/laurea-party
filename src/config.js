@@ -13,10 +13,9 @@ export const party = {
   date: '2026-07-24T18:00:00+02:00',
 
   // Indirizzo completo del luogo della festa
-  // TODO: sostituisci con l'indirizzo reale
   location: {
     name: 'Camozzi  House',
-    address: 'Via Castellaro 19, Copparo',
+    address: 'Via Roma, Copparo',
   },
 
   // Programma della serata. Aggiungi/rimuovi voci a piacere.
