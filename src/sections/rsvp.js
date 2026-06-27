@@ -29,7 +29,6 @@ export function initRsvp() {
           type: 'rsvp',
           name: data.get('name'),
           attending: data.get('attending'),
-          guests: Number(data.get('guests')) || 1,
           notes: data.get('notes') || '',
         }),
       });
