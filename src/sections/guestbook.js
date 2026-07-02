@@ -6,7 +6,7 @@ const POLL_INTERVAL_MS = 15000;
 export function initGuestbook() {
   initForm();
   initMessages();
-  initImmichGallery();
+  initGallery();
 }
 
 function initForm() {
@@ -97,6 +97,11 @@ async function uploadToImmich(file) {
 function initMessages() {
   fetchMessages();
   setInterval(fetchMessages, POLL_INTERVAL_MS);
+}
+
+function initGallery() {
+  initImmichGallery();
+  setInterval(initImmichGallery, POLL_INTERVAL_MS);
 }
 
 async function fetchMessages() {

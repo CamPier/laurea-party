@@ -20,10 +20,7 @@ export const party = {
 
   // Programma della serata. Aggiungi/rimuovi voci a piacere.
   schedule: [
-    { time: '18:00', label: 'Apertura festa & aperitivo', icon: '🍹' },
-    { time: '20:00', label: 'Cena', icon: '🍕' },
-    { time: '22:00', label: 'Musica & party', icon: '🎶' },
-    { time: 'late', label: 'Until late...', icon: '🌙' },
+    { time: '19:00', label: 'Until late...', icon: '🎉' },
   ],
 
   // Link alla playlist Spotify collaborativa
