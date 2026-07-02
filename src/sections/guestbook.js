@@ -12,7 +12,6 @@ export function initGuestbook() {
 function initForm() {
   const form = document.getElementById('guestbookForm');
   const status = document.getElementById('guestbookStatus');
-  const fileInput = form.querySelector('input[type="file"]');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -27,7 +26,6 @@ function initForm() {
     status.textContent = 'invio in corso...';
 
     const data = new FormData(form);
-    const files = fileInput.files ? Array.from(fileInput.files) : [];
 
     try {
       // no-cors: il redirect di Apps Script alla risposta finale non ha
@@ -44,54 +42,15 @@ function initForm() {
         }),
       });
 
-      let uploadErrors = 0;
-      if (files.length > 0) {
-        const results = await Promise.allSettled(files.map(uploadToImmich));
-        uploadErrors = results.filter((r) => r.status === 'rejected').length;
-        if (uploadErrors === 0) initImmichGallery();
-      }
-
       form.reset();
       fetchMessages();
-
-      if (uploadErrors > 0) {
-        status.classList.add('is-error');
-        status.textContent = `✓ messaggio pubblicato, ma ${uploadErrors} foto non sono state caricate. Usa il link "carica le tue foto" qui sotto.`;
-      } else {
-        status.textContent = '✓ messaggio pubblicato!';
-      }
+      status.textContent = '✓ messaggio pubblicato!';
     } catch (err) {
       console.error(err);
       status.classList.add('is-error');
       status.textContent = "✗ errore durante l'invio. riprova.";
     }
   });
-}
-
-async function uploadToImmich(file) {
-  if (!immich.sharedLinkKey) {
-    throw new Error('Immich non configurato');
-  }
-
-  const now = new Date();
-  const body = new FormData();
-  body.append('assetData', file);
-  body.append('deviceAssetId', `web-${now.getTime()}-${file.name}`);
-  body.append('deviceId', 'laurea-website');
-  body.append('fileCreatedAt', now.toISOString());
-  body.append('fileModifiedAt', now.toISOString());
-  body.append('isFavorite', 'false');
-
-  const res = await fetch(`${immich.baseUrl}/api/assets?key=${immich.sharedLinkKey}`, {
-    method: 'POST',
-    body,
-  });
-
-  if (!res.ok) {
-    throw new Error(`Upload Immich fallito: HTTP ${res.status}`);
-  }
-
-  return res.json();
 }
 
 function initMessages() {
@@ -152,7 +111,7 @@ async function initImmichGallery() {
   }
 
   const shareUrl = `${immich.baseUrl}/share/${immich.sharedLinkKey}`;
-  hint.innerHTML = `📸 Allega una foto al tuo messaggio qui sopra, oppure <a href="${shareUrl}" target="_blank" rel="noopener">carica le tue foto direttamente su Immich →</a>`;
+  hint.innerHTML = `📸 <a href="${shareUrl}" target="_blank" rel="noopener">Carica foto della laurea →</a>`;
 
   try {
     const res = await fetch(`${immich.baseUrl}/api/shared-links/me?key=${immich.sharedLinkKey}`);
