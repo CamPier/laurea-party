@@ -1,14 +1,12 @@
 const KONAMI = [
   'ArrowUp',
+  'ArrowDown',
   'ArrowUp',
   'ArrowDown',
-  'ArrowDown',
   'ArrowLeft',
   'ArrowRight',
   'ArrowLeft',
   'ArrowRight',
-  'b',
-  'a',
 ];
 
 export function initEasterEggs() {
@@ -22,7 +20,7 @@ function consoleMessage() {
     'color:#39ff14; font-size:18px; font-weight:bold; font-family:monospace;'
   );
   console.log(
-    '%cStai guardando il codice della mia festa di laurea.\nSe trovi un bug... è una feature. 😉\n\nPS: prova il Konami Code 🎮 (↑ ↑ ↓ ↓ ← → ← → B A)',
+    '%cStai guardando il codice della mia festa di laurea.\nSe trovi un bug... è una feature. 😉\n\nPS: prova il cheat code 🎮 (↑ ↓ ↑ ↓ ← → ← →)',
     'color:#ffb000; font-family:monospace; font-size:13px;'
   );
 }
