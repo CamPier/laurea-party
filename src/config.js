@@ -14,13 +14,13 @@ export const party = {
 
   // Indirizzo completo del luogo della festa
   location: {
-    name: 'Camozzi  House',
-    address: 'Via Roma, Copparo',
+    name: "L'Abate Ghiotto",
+    address: "L'Abate Ghiotto, Ferrara",
   },
 
   // Programma della serata. Aggiungi/rimuovi voci a piacere.
   schedule: [
-    { time: '19:00', label: 'Until late...', icon: '🎉' },
+    { time: '19:30', label: 'Until late...', icon: '🎉' },
   ],
 
   // Link alla playlist Spotify collaborativa
